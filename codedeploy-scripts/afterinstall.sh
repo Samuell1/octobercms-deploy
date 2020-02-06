@@ -20,7 +20,7 @@ chown -R www-data:www-data /home/ubuntu/.npm
 chown -R www-data:www-data /home/ubuntu/.config
 
 # install composer
-sudo -u www-data composer install --no-ansi --no-dev --no-interaction --no-progress --prefer-dist --optimize-autoloader
+composer install --no-ansi --no-dev --no-interaction --no-progress --prefer-dist --optimize-autoloader
 
 # Go in website theme folder
 cd /var/www/html/themes/dr
