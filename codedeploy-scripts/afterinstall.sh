@@ -22,6 +22,9 @@ chown -R www-data:www-data /home/ubuntu/.config
 # install composer
 composer install --no-ansi --no-dev --no-interaction --no-progress --prefer-dist --optimize-autoloader
 
+# set permissions on vendor packages
+chown -R www-data:www-data /var/www/html/vendor
+
 # Go in website theme folder
 cd /var/www/html/themes/dr
 # install npm in theme
