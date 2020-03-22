@@ -14,3 +14,4 @@ Most of the bottlenecks of OctoberCMS are that people forgot to do:
 - Use OPcache on server
 - Disable debug and enabled cache for everything
 - Use memory cache (redis, memcached...)
+- In custom plugins cache information that is request heavy
