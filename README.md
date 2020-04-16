@@ -2,6 +2,9 @@
 
 ### Setup
 
+- First uninstall/remove any apache packages or directories.
+- Run [Server setup script](https://github.com/Samuell1/octobercms-deploy/blob/master/ServerSetup.sh) to install all packages needed.
+
 
 ### How to deploy to AWS Instances with AWS Codedeploy
 
