@@ -20,3 +20,7 @@ Most of the bottlenecks of Laravel/OctoberCMS are that people forgot to do:
 - Use memory cache (redis, memcached...)
 - In custom plugins cache information that is request heavy
 - Apply custom caching for values that are not needed to be accessed in realtime (For example category list, default values)
+
+#### Optional optimalizations
+- Use CDN for assets
+- Queue workers for emails and other heavy tasks
