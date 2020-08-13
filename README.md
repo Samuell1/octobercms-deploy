@@ -14,6 +14,7 @@ Most of the bottlenecks of Laravel/OctoberCMS are that people forgot to do:
 
 - Optimalize composer autoloader `composer install --optimize-autoloader`
 - Run `php artisan config:cache` to cache config files
+- Run `php artisan route:cache` to cache routes
 - Use OPcache on server
 - Disable debug and enabled cache for everything
 - Use memory cache (redis, memcached...)
