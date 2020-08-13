@@ -25,6 +25,7 @@ php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 php composer-setup.php -- --install-dir=/usr/bin --filename=composer
 rm composer-setup.php
 
+# Speed up composer install with parallel downloading
 composer global require hirak/prestissimo
 
 # Ruby for codedeploy agent
