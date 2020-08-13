@@ -10,7 +10,7 @@
 
 
 ### Optimalizations
-Most of the bottlenecks of OctoberCMS are that people forgot to do:
+Most of the bottlenecks of Laravel/OctoberCMS are that people forgot to do:
 
 - Optimalize composer autoloader `composer install --optimize-autoloader`
 - Run `php artisan config:cache` to cache config files
