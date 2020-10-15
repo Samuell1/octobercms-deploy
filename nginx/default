@@ -23,10 +23,11 @@ server {
 
 	# index.php fallback
 	location / {
-		try_files $uri $uri/ /index.php?$query_string;
+		rewrite ^/.*$ /index.php last;
 	}
 
-	location ~ \.php$ {
+	# pass the PHP scripts to FastCGI server
+	location ~ ^/index.php {
 		try_files $uri =404;
 		fastcgi_split_path_info ^(.+\.php)(/.+)$;
 		include fastcgi_params;
