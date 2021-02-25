@@ -10,7 +10,6 @@ server {
 
 	# limit requests
 	limit_req zone=bots burst=2 nodelay;
-	limit_req zone=one burst=15 nodelay;
 	limit_req_status 429;
 	limit_conn_status 429;
 
