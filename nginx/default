@@ -9,7 +9,6 @@ server {
 	index index.php;
 
 	# limit requests
-	limit_req zone=bots burst=2 nodelay;
 	limit_req_status 429;
 	limit_conn_status 429;
 
