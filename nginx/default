@@ -18,6 +18,11 @@ server {
 		set $host_without_www $1;
 		rewrite ^/(.*)$ $scheme://$host_without_www/$1 permanent;
 	}
+	
+	# automatically redirect when index.php is requested
+	if ($request_uri ~* "^(.*/)index\.php$") {
+		return 301 $1;
+	}
 
 	# index.php fallback
 	location / {
