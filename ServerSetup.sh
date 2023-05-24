@@ -6,9 +6,9 @@ apt update
 apt install wget
 apt-add-repository ppa:ondrej/php
 apt update
-apt install -y php7.3
-apt install -y php7.3-fpm
-apt install -y php-cgi php-mbstring php-xml php-zip php-mysql php-gd php-xml php-curl php-imap
+apt install -y php8.1
+apt install -y php8.1-fpm
+apt install -y php-cgi php-mbstring php-xml php-zip php-mysql php-gd php-xml php-curl php-imap php-redis php-bcmath php-intl
 apt install -y nginx software-properties-common python-pip
 apt install -y npm
 
@@ -25,9 +25,6 @@ php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 php composer-setup.php -- --install-dir=/usr/bin --filename=composer
 rm composer-setup.php
 
-# Speed up composer install with parallel downloading
-composer global require hirak/prestissimo
-
 # Ruby for codedeploy agent
 apt install -y ruby
 
@@ -39,5 +36,5 @@ service codedeploy-agent start
 rm -rf install
 
 # Restart php and nginx
-service php7.3-fpm reload
+service php8.1-fpm reload
 service nginx reload
