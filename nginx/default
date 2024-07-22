@@ -8,17 +8,12 @@ server {
 	# index.php
 	index index.php;
 
-	# limit requests
-	limit_req_status 429;
-	limit_conn_status 429;
-
 	# enforce NO www
-	if ($host ~* ^www\.(.*))
-	{
+	if ($host ~* ^www\.(.*)) {
 		set $host_without_www $1;
 		rewrite ^/(.*)$ $scheme://$host_without_www/$1 permanent;
 	}
-	
+
 	# automatically redirect when index.php is requested
 	if ($request_uri ~* "^(.*/)index\.php$") {
 		return 301 $1;
@@ -31,11 +26,11 @@ server {
 
 	# pass the PHP scripts to FastCGI server
 	location ~ ^/index.php {
-		try_files $uri =404;
+    	try_files $uri =404;
 		fastcgi_split_path_info ^(.+\.php)(/.+)$;
 		include fastcgi_params;
 		fastcgi_intercept_errors on;
-		fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
+		fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
 		fastcgi_index index.php;
 		fastcgi_buffers 8 16k;
 		fastcgi_buffer_size	32k;
@@ -44,26 +39,22 @@ server {
 	}
 
 	# health check
-	location /nginx-health {
-		access_log off;
-		return 200 "healthy\n";
-		add_header Content-Type text/plain;
+	location ~ ^/(ping)$ {
+		access_log off;	
+		fastcgi_param DOCUMENT_ROOT	$realpath_root;
+		fastcgi_param SCRIPT_FILENAME	$realpath_root$fastcgi_script_name;
+		fastcgi_index index.php;
+		include fastcgi_params;
+		fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
 	}
 
 	# security headers
 	add_header X-Frame-Options "SAMEORIGIN" always;
-	add_header X-XSS-Protection "1; mode=block" always;
 	add_header X-Content-Type-Options "nosniff" always;
 	add_header Referrer-Policy "no-referrer-when-downgrade" always;
 	add_header Content-Security-Policy "default-src * data: 'unsafe-eval' 'unsafe-inline'" always;
-	
-	# deny htaccess
-	location ~ /\.ht {
-		access_log off;
-		deny all;
-	}
 
-	# deny all . files
+	# Block all .dotfiles except well-known
 	location ~ /\.(?!well-known) {
 		access_log off;
 		deny all;
@@ -92,6 +83,7 @@ server {
 	## Let nginx return 404 if static file not exists
 	location ~ ^/storage/app/uploads/public { try_files $uri 404; }
 	location ~ ^/storage/app/media { try_files $uri 404; }
+	location ~ ^/storage/app/resources { try_files $uri 404; }
 	location ~ ^/storage/temp/public { try_files $uri 404; }
 
 	location ~ ^/modules/.*/assets { try_files $uri 404; }
