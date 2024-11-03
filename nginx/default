@@ -26,7 +26,7 @@ server {
 
 	# pass the PHP scripts to FastCGI server
 	location ~ ^/index.php {
-    	try_files $uri =404;
+    		try_files $uri =404;
 		fastcgi_split_path_info ^(.+\.php)(/.+)$;
 		include fastcgi_params;
 		fastcgi_intercept_errors on;
