@@ -77,7 +77,7 @@ opcache.max_accelerated_files=20000
 
 #### Don't Check PHP Files Timestamps
 
-Enabling PHP OPcache and JIT (Just-In-Time) compilation can significantly improve the performance of your application by caching the compiled PHP code and optimizing the execution of the code. This reduces the time it takes to execute the PHP scripts and improves the overall performance of your application. In production servers, PHP files should never change, unless a new application version is deployed. However, by default OPcache checks if cached files have changed their contents since they were cached. This check introduces some overhead that can be avoided as follows:
+In production servers, PHP files should never change, unless a new application version is deployed. However, by default OPcache checks if cached files have changed their contents since they were cached. This check introduces some overhead that can be avoided as follows:
 
 ```
 ; php.ini
