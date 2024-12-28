@@ -1,11 +1,11 @@
 ## OctoberCMS deploy tips & tricks
 
-### Setup
+## Setup
 
 - First uninstall/remove any apache packages or directories.
 - Run [Server setup script](https://github.com/Samuell1/octobercms-deploy/blob/master/ServerSetup.sh) to install all packages needed.
 
-### Deployment to AWS Instances with AWS CodeDeploy
+## Deployment to AWS Instances with AWS CodeDeploy
 
 #### codedeploy-scripts directory
 
@@ -35,15 +35,20 @@ The `nginx` directory contains the configuration files for the Nginx web server.
 
 The `php-fpm` directory contains the configuration files for PHP-FPM. The `php-fpm.conf` file is the main configuration file for PHP-FPM, and the `pool.d/www.conf` file contains the configuration settings for the `www` pool.
 
-### Optimalizations
+## Optimalizations
 
 #### Optimize Composer Autoloader
 
-Most of the bottlenecks of Laravel/OctoberCMS are that people forgot to do:
-
 - Optimalize composer autoloader `composer install --optimize-autoloader` or `composer dump-autoload --optimize`
 
-Optimizing the Composer autoloader can significantly improve the performance of your application by reducing the time it takes to load classes. This is especially important in production environments where performance is critical.
+The class loader used while developing the application is optimized to find new and changed classes. In production servers, PHP files should never change, unless a new application version is deployed. That's why you can optimize Composer's autoloader to scan the entire application once and build an optimized "class map", which is a big array of the locations of all the classes and it's stored in vendor/composer/autoload_classmap.php.
+
+Execute this command to generate the new class map (and make it part of your deployment process too):
+
+`composer dump-autoload --no-dev --classmap-authoritative`
+
+- `--no-dev` excludes the classes that are only needed in the development environment (i.e. require-dev dependencies and autoload-dev rules);
+- `--classmap-authoritative` creates a class map for PSR-0 and PSR-4 compatible classes used in your application and prevents Composer from scanning the file system for classes that are not found in the class map. (see: Composer's autoloader optimization).
 
 #### Cache Config Files
 
@@ -57,11 +62,33 @@ Caching the configuration files can improve the performance of your application 
 
 Caching the routes can improve the performance of your application by reducing the time it takes to load the route definitions. This is done by running the `php artisan route:cache` command, which creates a single cached route file that is loaded on each request.
 
-#### Use PHP OPcache and JIT
+#### Configure OPcache and JIT for Maximum Performance
 
-- Use PHP OPcache and JIT on server
+The default OPcache configuration is not suited applications, so it's recommended to change these settings as follows:
 
-Enabling PHP OPcache and JIT (Just-In-Time) compilation can significantly improve the performance of your application by caching the compiled PHP code and optimizing the execution of the code. This reduces the time it takes to execute the PHP scripts and improves the overall performance of your application.
+```
+; php.ini
+; maximum memory that OPcache can use to store compiled PHP files
+opcache.memory_consumption=256
+
+; maximum number of files that can be stored in the cache
+opcache.max_accelerated_files=20000
+```
+
+#### Don't Check PHP Files Timestamps
+
+In production servers, PHP files should never change, unless a new application version is deployed. However, by default OPcache checks if cached files have changed their contents since they were cached. This check introduces some overhead that can be avoided as follows:
+
+```
+; php.ini
+opcache.validate_timestamps=0
+```
+
+After each deployment, you must empty and regenerate the cache of OPcache. Otherwise you won't see the updates made in the application. Given that in PHP, the CLI and the web processes don't share the same OPcache, you cannot clear the web server OPcache by executing some command in your terminal. These are some of the possible solutions:
+
+- Restart the web server;
+- Call the `apc_clear_cache()` or `opcache_reset()` functions via the web server (i.e. by having these in a script that you execute over the web);
+- Use the cachetool utility to control APC and OPcache from the CLI.
 
 #### Disable Debug and Enable Cache
 
@@ -71,9 +98,9 @@ Disabling the debug mode and enabling caching for everything can improve the per
 
 #### Use Memory Cache
 
-- Use memory cache (redis, memcached...)
+- Use memory cache (valkey, dragonflydb, redis, memcached...)
 
-Using a memory cache such as Redis or Memcached can significantly improve the performance of your application by reducing the time it takes to retrieve data from the database. This is done by storing the frequently accessed data in memory, which can be quickly retrieved without the need to query the database.
+Using a memory cache can significantly improve the performance of your application by reducing the time it takes to retrieve data from the database. This is done by storing the frequently accessed data in memory, which can be quickly retrieved without the need to query the database.
 
 #### Cache Information in Custom Plugins
 
